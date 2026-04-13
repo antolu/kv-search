@@ -41,7 +41,7 @@ dev = [
 ]
 
 [build-system]
-requires = ["setuptools >= 61", "setuptools-scm[toml] ~= 10.0", "wheel"]
+requires = ["setuptools >= 82.0.1", "setuptools-scm[toml] ~= 10.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 # keep this for dynamic versioning
