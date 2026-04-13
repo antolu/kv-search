@@ -1,8 +1,5 @@
 [project]
-dependencies = [
-  "httpx >= 0.28.1",
-  "pydantic >= 2.12.5",
-]
+dependencies = []
 name = "kv-search"
 dynamic = ["version", "readme"]
 description = "Keyword, vector hybrid search with semantic understanding"
@@ -36,6 +33,10 @@ changelog = "https://github.com/antolu/kv-search/releases"
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
 doc = ["sphinx", "myst-parser", "sphinx-copybutton"]
+elasticsearch = [
+  "elasticsearch",
+  "pydantic >= 2.12.5",
+]
 dev = [
   "pre-commit==4.5.1",
   "ruff==0.15.10",

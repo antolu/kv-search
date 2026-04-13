@@ -1,4 +1,5 @@
-from kv_search._backends import ObsidianHttpBackend
+from kv_search.__about__ import __version__
+from kv_search._elasticsearch_backend import ElasticsearchKeywordBackend
 from kv_search._engine import SearchEngine
 from kv_search._interfaces import (
     KeywordSearchBackend,
@@ -8,12 +9,11 @@ from kv_search._interfaces import (
 )
 from kv_search._session import SearchSession
 from kv_search._types import SearchHit, SemanticResult
-from kv_search._version import version as __version__
 
 __all__ = [
+    "ElasticsearchKeywordBackend",
     "KeywordSearchBackend",
     "LLMCompletionFn",
-    "ObsidianHttpBackend",
     "SearchEngine",
     "SearchHit",
     "SearchSession",
