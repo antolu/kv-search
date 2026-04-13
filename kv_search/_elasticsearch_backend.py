@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def _import_elasticsearch() -> types.ModuleType:
     try:
-        import elasticsearch
+        import elasticsearch  # noqa: PLC0415
     except ImportError:
         logger.exception(
             "Missing optional dependency for ElasticsearchKeywordBackend: elasticsearch. "
@@ -27,7 +27,7 @@ def _import_elasticsearch() -> types.ModuleType:
 
 
 class ElasticsearchKeywordBackend(KeywordSearchBackend):
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         *,
         hosts: str | list[str],
