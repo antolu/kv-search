@@ -11,14 +11,11 @@ classifiers = [
   "Natural Language :: English",
   "Operating System :: POSIX :: Linux",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Scientific/Engineering :: Physics",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 
 [[project.authors]]
 name = "Anton Lu"
@@ -70,7 +67,7 @@ kv_search = ["py.typed"]
 # autoformatter
 # For pre-commit, only ruff is used.
 [tool.black]
-target-version = ["py311"]
+target-version = ["py314"]
 line-length = 88
 include = '\.pyi?$'
 exclude = '''
@@ -114,7 +111,7 @@ exclude = [
 ]
 
 line-length = 88         # black and ruff default
-target-version = "py311"
+target-version = "py314"
 
 [tool.ruff.lint]
 # All rules can be found here: https://docs.astral.sh/ruff/rules/
