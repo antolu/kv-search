@@ -1,5 +1,8 @@
 [project]
-dependencies = []
+dependencies = [
+  "httpx >= 0.28.1",
+  "pydantic >= 2.12.5",
+]
 name = "kv-search"
 dynamic = ["version", "readme"]
 description = "Keyword, vector hybrid search with semantic understanding"
