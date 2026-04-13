@@ -40,7 +40,8 @@ class SearchEngine:
         self, session: SearchSession, queries: list[str]
     ) -> list[SearchHit]:
         if self._keyword_backend is None:
-            raise RuntimeError("No keyword search backend configured")
+            msg = "No keyword search backend configured"
+            raise RuntimeError(msg)
         hits = await self._keyword_backend.keyword_search(queries)
         session.add_keyword_hits(hits)
         return hits
@@ -54,7 +55,8 @@ class SearchEngine:
         min_score: float = 0.35,
     ) -> list[SearchHit]:
         if self._vector_backend is None:
-            raise RuntimeError("No vector search backend configured")
+            msg = "No vector search backend configured"
+            raise RuntimeError(msg)
         allowlist = session.allowlist or None
         effective_min = _ALLOWLIST_MIN_SCORE if allowlist else min_score
         logger.debug(
@@ -82,7 +84,8 @@ class SearchEngine:
         top_n: int = 10,
     ) -> list[SemanticResult]:
         if self._semantic_backend is None:
-            raise RuntimeError("No semantic search backend configured")
+            msg = "No semantic search backend configured"
+            raise RuntimeError(msg)
         hits = await self._semantic_backend.semantic_search(
             query,
             keyword_backend=self._keyword_backend,
