@@ -6,7 +6,7 @@ dependencies = [
 name = "kv-search"
 dynamic = ["version", "readme"]
 description = "Keyword, vector hybrid search with semantic understanding"
-license = { text = "Other/Proprietary License" }
+license = { file = "LICENSE.md" }
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",
