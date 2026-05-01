@@ -132,8 +132,6 @@ select = [
   # "D",  # docstring (pydocstyle),  # not enabled by default
   "PD",     # pandas
   "TRY",    # tryceratops
-  "NPY",    # numpy
-  "NPY201", # numpy 2.0
   "PERF",   # perflint
   "RUF",    # ruff
   # v flake8 v
@@ -165,7 +163,7 @@ preview = true
 
 [tool.mypy]
 disallow_untyped_defs = true
-plugins = "numpy.typing.mypy_plugin"
+
 
 [[tool.mypy.overrides]]
 module = ["matplotlib.*"]
