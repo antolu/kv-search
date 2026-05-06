@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from kv_search import KeywordQuery, SearchHit, SemanticResult
+from kv_search import KeywordQueries, SearchHit, SemanticResult
 
 
 def test_search_hit_serializable_no_score() -> None:
@@ -36,23 +36,23 @@ def test_semantic_result_default_reasoning() -> None:
     assert not result.reasoning
 
 
-def test_keyword_query_wraps_list() -> None:
-    q = KeywordQuery(queries=["foo", "bar"])
+def test_keyword_queries_wraps_list() -> None:
+    q = KeywordQueries(queries=["foo", "bar"])
     assert q.queries == ["foo", "bar"]
 
 
-def test_keyword_query_frozen() -> None:
-    q = KeywordQuery(queries=["foo"])
+def test_keyword_queries_frozen() -> None:
+    q = KeywordQueries(queries=["foo"])
     with pytest.raises(dataclasses.FrozenInstanceError):
         q.queries = ["bar"]  # type: ignore[misc]
 
 
-def test_keyword_query_subclassable() -> None:
+def test_keyword_queries_subclassable() -> None:
     @dataclasses.dataclass(frozen=True)
-    class LangQuery(KeywordQuery):
+    class LangQueries(KeywordQueries):
         language: str | None = None
 
-    q = LangQuery(queries=["hello"], language="en")
+    q = LangQueries(queries=["hello"], language="en")
     assert q.queries == ["hello"]
     assert q.language == "en"
 

@@ -10,11 +10,11 @@ from kv_search._interfaces import (
     VectorSearchBackend,
 )
 from kv_search._session import SearchSession
-from kv_search._types import KeywordQuery, SearchHit, SemanticResult
+from kv_search._types import KeywordQueries, SearchHit, SemanticResult
 
 __all__ = [
     "ElasticsearchKeywordBackend",
-    "KeywordQuery",
+    "KeywordQueries",
     "KeywordSearchBackend",
     "LLMCompletionFn",
     "SearchEngine",

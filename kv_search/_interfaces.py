@@ -3,12 +3,12 @@ from __future__ import annotations
 import abc
 import typing
 
-from kv_search._types import KeywordQuery, SearchHit, SemanticResult
+from kv_search._types import KeywordQueries, SearchHit, SemanticResult
 
 
 class KeywordSearchBackend(abc.ABC):
     @abc.abstractmethod
-    async def keyword_search(self, query: KeywordQuery) -> list[SearchHit]: ...
+    async def keyword_search(self, queries: KeywordQueries) -> list[SearchHit]: ...
 
 
 class VectorSearchBackend(abc.ABC):

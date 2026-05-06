@@ -9,7 +9,7 @@ if typing.TYPE_CHECKING:
     from pydantic import JsonValue
 
 from kv_search._interfaces import KeywordSearchBackend
-from kv_search._types import KeywordQuery, SearchHit
+from kv_search._types import KeywordQueries, SearchHit
 
 logger = logging.getLogger(__name__)
 
@@ -58,10 +58,10 @@ class ElasticsearchKeywordBackend(KeywordSearchBackend):
         self._path_field = path_field
         self._size = size
 
-    async def keyword_search(self, query: KeywordQuery) -> list[SearchHit]:
+    async def keyword_search(self, queries: KeywordQueries) -> list[SearchHit]:
         hits: list[SearchHit] = []
         seen: set[str] = set()
-        for q in query.queries:
+        for q in queries.queries:
             try:
                 query_body: dict[str, JsonValue] = {
                     "multi_match": {
@@ -75,7 +75,7 @@ class ElasticsearchKeywordBackend(KeywordSearchBackend):
                     size=self._size,
                 )
             except Exception:
-                logger.exception("elasticsearch keyword search failed for query %r", q)
+                logger.exception("elasticsearch keyword search failed for term %r", q)
                 continue
 
             body = typing.cast(Mapping[str, object], response)

@@ -5,7 +5,7 @@ from typing import Any
 
 
 @dataclasses.dataclass(frozen=True)
-class KeywordQuery:
+class KeywordQueries:
     queries: list[str]
 
 
