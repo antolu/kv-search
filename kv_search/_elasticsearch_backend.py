@@ -9,7 +9,7 @@ if typing.TYPE_CHECKING:
     from pydantic import JsonValue
 
 from kv_search._interfaces import KeywordSearchBackend
-from kv_search._types import SearchHit
+from kv_search._types import KeywordQuery, SearchHit
 
 logger = logging.getLogger(__name__)
 
@@ -58,14 +58,14 @@ class ElasticsearchKeywordBackend(KeywordSearchBackend):
         self._path_field = path_field
         self._size = size
 
-    async def keyword_search(self, queries: list[str]) -> list[SearchHit]:
+    async def keyword_search(self, query: KeywordQuery) -> list[SearchHit]:
         hits: list[SearchHit] = []
         seen: set[str] = set()
-        for query in queries:
+        for q in query.queries:
             try:
                 query_body: dict[str, JsonValue] = {
                     "multi_match": {
-                        "query": query,
+                        "query": q,
                         "fields": [self._path_field, "title^2", "content"],
                     }
                 }
@@ -75,9 +75,7 @@ class ElasticsearchKeywordBackend(KeywordSearchBackend):
                     size=self._size,
                 )
             except Exception:
-                logger.exception(
-                    "elasticsearch keyword search failed for query %r", query
-                )
+                logger.exception("elasticsearch keyword search failed for query %r", q)
                 continue
 
             body = typing.cast(Mapping[str, object], response)
@@ -96,7 +94,17 @@ class ElasticsearchKeywordBackend(KeywordSearchBackend):
                 path = source.get(self._path_field)
                 if isinstance(path, str) and path not in seen:
                     seen.add(path)
-                    hits.append(SearchHit(path=path))
+                    score_raw = item.get("_score")
+                    score = (
+                        float(score_raw) if isinstance(score_raw, int | float) else None
+                    )
+                    metadata: dict[str, object] = {
+                        k: v
+                        for k, v in source.items()
+                        if k != self._path_field
+                        and isinstance(v, str | int | float | bool)
+                    }
+                    hits.append(SearchHit(path=path, score=score, metadata=metadata))
         return hits
 
     async def close(self) -> None:

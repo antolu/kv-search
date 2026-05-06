@@ -9,7 +9,7 @@ from kv_search._interfaces import (
     VectorSearchBackend,
 )
 from kv_search._session import SearchSession
-from kv_search._types import SearchHit, SemanticResult
+from kv_search._types import KeywordQuery, SearchHit, SemanticResult
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +37,13 @@ class SearchEngine:
         return session
 
     async def keyword_search(
-        self, session: SearchSession, queries: list[str]
+        self, session: SearchSession, queries: KeywordQuery | list[str]
     ) -> list[SearchHit]:
         if self._keyword_backend is None:
             msg = "No keyword search backend configured"
             raise RuntimeError(msg)
+        if isinstance(queries, list):
+            queries = KeywordQuery(queries=queries)
         hits = await self._keyword_backend.keyword_search(queries)
         session.add_keyword_hits(hits)
         return hits

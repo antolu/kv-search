@@ -6,6 +6,7 @@ import dataclasses
 import pytest
 
 from kv_search import (
+    KeywordQuery,
     KeywordSearchBackend,
     LLMCompletionFn,
     SearchEngine,
@@ -20,10 +21,10 @@ from kv_search import (
 class MockKeywordBackend(KeywordSearchBackend):
     def __init__(self, hits: list[SearchHit]) -> None:
         self.hits = hits
-        self.calls: list[list[str]] = []
+        self.calls: list[KeywordQuery] = []
 
-    async def keyword_search(self, queries: list[str]) -> list[SearchHit]:
-        self.calls.append(queries)
+    async def keyword_search(self, query: KeywordQuery) -> list[SearchHit]:
+        self.calls.append(query)
         return self.hits
 
 
@@ -97,7 +98,7 @@ def test_keyword_search_delegates_to_backend() -> None:
     hits = asyncio.run(engine.keyword_search(session, ["foo", "bar"]))
     assert len(hits) == 2  # noqa: PLR2004
     assert hits[0].path == "a.md"
-    assert backend.calls == [["foo", "bar"]]
+    assert backend.calls == [KeywordQuery(queries=["foo", "bar"])]
 
 
 def test_keyword_search_updates_session() -> None:
@@ -234,3 +235,20 @@ def test_session_allowlist_from_keyword_hits() -> None:
     session = SearchSession()
     session.add_keyword_hits([SearchHit(path="b.md"), SearchHit(path="a.md")])
     assert session.allowlist == ["a.md", "b.md"]
+
+
+def test_keyword_search_coerces_list_to_query() -> None:
+    backend = MockKeywordBackend([SearchHit(path="a.md")])
+    engine = SearchEngine(keyword_backend=backend)
+    session = engine.new_session()
+    asyncio.run(engine.keyword_search(session, ["foo", "bar"]))
+    assert backend.calls[0] == KeywordQuery(queries=["foo", "bar"])
+
+
+def test_keyword_search_accepts_keyword_query_directly() -> None:
+    backend = MockKeywordBackend([SearchHit(path="a.md")])
+    engine = SearchEngine(keyword_backend=backend)
+    session = engine.new_session()
+    q = KeywordQuery(queries=["foo"])
+    asyncio.run(engine.keyword_search(session, q))
+    assert backend.calls[0] is q
