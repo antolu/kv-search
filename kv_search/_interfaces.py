@@ -32,6 +32,17 @@ class LLMCompletionFn(typing.Protocol):
     ) -> str: ...
 
 
+class RerankerBackend(abc.ABC):
+    @abc.abstractmethod
+    async def rerank(
+        self,
+        query: str,
+        candidates: list[SearchHit],
+        *,
+        top_n: int,
+    ) -> list[SearchHit]: ...
+
+
 class SemanticSearchBackend(abc.ABC):
     @abc.abstractmethod
     async def semantic_search(  # noqa: PLR0913

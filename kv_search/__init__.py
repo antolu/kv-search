@@ -6,6 +6,7 @@ from kv_search._engine import SearchEngine
 from kv_search._interfaces import (
     KeywordSearchBackend,
     LLMCompletionFn,
+    RerankerBackend,
     SemanticSearchBackend,
     VectorSearchBackend,
 )
@@ -17,6 +18,7 @@ __all__ = [
     "KeywordQueries",
     "KeywordSearchBackend",
     "LLMCompletionFn",
+    "RerankerBackend",
     "SearchEngine",
     "SearchHit",
     "SearchSession",

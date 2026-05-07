@@ -9,6 +9,7 @@ from kv_search import (
     KeywordQueries,
     KeywordSearchBackend,
     LLMCompletionFn,
+    RerankerBackend,
     SearchEngine,
     SearchHit,
     SearchSession,
@@ -252,3 +253,33 @@ def test_keyword_search_accepts_keyword_query_directly() -> None:
     q = KeywordQueries(queries=["foo"])
     asyncio.run(engine.keyword_search(session, q))
     assert backend.calls[0] is q
+
+
+class MockRerankerBackend(RerankerBackend):
+    def __init__(self, hits: list[SearchHit]) -> None:
+        self.hits = hits
+        self.last_query: str | None = None
+        self.last_candidates: list[SearchHit] | None = None
+        self.last_top_n: int | None = None
+
+    async def rerank(
+        self,
+        query: str,
+        candidates: list[SearchHit],
+        *,
+        top_n: int,
+    ) -> list[SearchHit]:
+        self.last_query = query
+        self.last_candidates = candidates
+        self.last_top_n = top_n
+        return self.hits[:top_n]
+
+
+def test_reranker_backend_abc_can_be_subclassed() -> None:
+    backend = MockRerankerBackend([SearchHit(path="a.md", score=0.9)])
+    results = asyncio.run(
+        backend.rerank("query", [SearchHit(path="a.md", score=0.5)], top_n=1)
+    )
+    assert len(results) == 1
+    assert results[0].path == "a.md"
+    assert results[0].score == pytest.approx(0.9)
