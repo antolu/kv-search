@@ -42,7 +42,9 @@ class SearchEngine:
         if self._keyword_backend is None:
             msg = "No keyword search backend configured"
             raise RuntimeError(msg)
-        kw_queries = KeywordQueries(queries=queries) if isinstance(queries, list) else queries
+        kw_queries = (
+            KeywordQueries(queries=queries) if isinstance(queries, list) else queries
+        )
         hits = await self._keyword_backend.keyword_search(kw_queries)
         session.add_keyword_hits(hits)
         return hits
